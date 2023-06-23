@@ -1,3 +1,11 @@
+import { UseTheme, theme } from "./theme";
+import { AppRoutes } from "./routes";
+
 export const App = () => {
-  return <h1>Vite + React</h1>
+
+  return (
+    <UseTheme theme={theme}>
+      <AppRoutes />
+    </UseTheme>
+  );
 }
