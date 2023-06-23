@@ -1,2 +1,3 @@
+export * from './theme';
 export { theme } from './constant';
-export { UseTheme } from './theme';
+export { UseGlobalStyle } from './styles';

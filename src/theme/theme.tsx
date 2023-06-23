@@ -22,6 +22,8 @@ interface IThemeProps {
     children: React.ReactNode;
 }
 
+export type ThemeType = IThemes;
+
 export const UseTheme: React.FC<IThemeProps> = ({ theme, children }) => (
     <ThemeProvider theme={theme}>{children}</ThemeProvider>
 );
