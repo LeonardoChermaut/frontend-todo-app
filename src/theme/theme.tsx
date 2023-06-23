@@ -1,5 +1,11 @@
 import { ThemeProvider } from 'styled-components';
 
+type FontSize = number[] & {
+    body: number;
+    bodyExtraLarge: number;
+    displayExtraLarge: number;
+};
+
 interface IColors {
     primary: string;
     secondary: string;
@@ -13,20 +19,10 @@ interface IThemes {
     colors: IColors;
 }
 
-type FontSize = number[] & {
-    body: number;
-    bodyExtraLarge: number;
-    displayExtraLarge: number;
-};
-
-
-const colors: IColors = {
-    primary: "#0070f3",
-    secondary: "#ff0080",
-    warn: "#ff0000",
-    success: "#00ff00",
-    error: "#ff0000",
-};
+interface IThemeProps {
+    theme: IThemes;
+    children: React.ReactNode;
+}
 
 const fontSize: FontSize = [14, 20, 96] as FontSize;
 
@@ -34,16 +30,8 @@ fontSize.body = fontSize[0];
 fontSize.bodyExtraLarge = fontSize[1];
 fontSize.displayExtraLarge = fontSize[2];
 
-const themes: IThemes = {
-    fontSize,
-    colors,
-};
 
-interface ThemeProps {
-    theme: IThemes;
-    children: React.ReactNode;
-}
 
-export const useTheme: React.FC<ThemeProps> = ({ theme, children }) => (
+export const useTheme: React.FC<IThemeProps> = ({ theme, children }) => (
     <ThemeProvider theme={theme}>{children}</ThemeProvider>
 );
