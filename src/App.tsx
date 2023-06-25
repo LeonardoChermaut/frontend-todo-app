@@ -1,12 +1,14 @@
-import { UseGlobalStyle, UseTheme, theme } from "./theme";
-import { AppRoutes } from "./routes";
+import { UseGlobalStyle, UseTheme, theme } from './theme';
+import { AppRoutes } from './routes';
+import { TaskProvider } from './context';
 
 export const App = () => {
-
   return (
     <UseTheme theme={theme}>
-      <UseGlobalStyle />
-      <AppRoutes />
+      <TaskProvider>
+        <UseGlobalStyle />
+        <AppRoutes />
+      </TaskProvider>
     </UseTheme>
   );
-}
+};

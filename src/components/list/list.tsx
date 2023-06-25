@@ -1,5 +1,5 @@
 import { Column } from '../column';
-import { ListItem, ListItemProps } from './list-item';
+import { ListItem, ListItemProps } from './ListItem';
 
 type ListProps = {
   items: ListItemProps[];
