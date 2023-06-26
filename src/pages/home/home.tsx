@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent } from 'react';
-import { Input, Text, Button, Row, Column, List } from '../../components';
+import { Input, Text, Button, Row, Column, List, Image } from '../../components';
 import { ITask } from 'context';
 import { TaskProvider, useTaskContext } from '../../context';
 
@@ -23,6 +23,8 @@ export const Home = () => {
     <TaskProvider>
       <React.Fragment>
         <Column width="50%" margin="0 auto" marginTop={5}>
+          <Image width="50%" height="50%" alt="" src="" />
+          <Column width="100%" minHeight="300px" borderRadius={10} marginBottom={4} textAlign="center"></Column>
           <Column textAlign="center">
             <Text fontWeight="bold" fontSize={40}>
               Tarefas

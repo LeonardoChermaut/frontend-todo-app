@@ -14,7 +14,7 @@ html, #root {
 }
 
 body {
-    background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+      background: linear-gradient(to right, #c31432, #240b36);
     color: ${({ theme }) => theme.colors.secondary};
 }
 `;

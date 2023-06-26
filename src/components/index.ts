@@ -5,3 +5,4 @@ export * from './input';
 export * from './row';
 export * from './column';
 export * from './icon';
+export * from "./image";
