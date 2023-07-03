@@ -1,10 +1,9 @@
 import styled from 'styled-components';
-import { typography, TypographyProps } from 'styled-system';
+import { typography, TypographyProps, color, ColorProps } from 'styled-system';
 
-type TextProps = TypographyProps;
+type TextProps = TypographyProps & ColorProps;
 
 export const Text = styled.a<TextProps>`
-  font-family: 'Roboto', sans-serif;
-  color: #fff;
+  ${color}
   ${typography}
 `;

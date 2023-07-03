@@ -14,6 +14,8 @@ import {
   SpaceProps,
   TextAlignProps,
   textAlign,
+  alignItems,
+  AlignItemsProps,
 } from 'styled-system';
 
 type ColumnProps = LayoutProps &
@@ -22,7 +24,8 @@ type ColumnProps = LayoutProps &
   BorderRadiusProps &
   BorderProps &
   FlexboxProps &
-  TextAlignProps & {
+  TextAlignProps &
+  AlignItemsProps & {
     cursor?: string;
   };
 
@@ -36,5 +39,6 @@ export const Column = styled.div<ColumnProps>`
   ${layout}
   ${flexbox}
   ${textAlign}
+  ${alignItems}
   ${borderRadius}
 `;

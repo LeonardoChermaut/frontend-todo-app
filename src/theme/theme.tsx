@@ -21,8 +21,8 @@ export type ThemeType = IThemes;
 
 export const theme = {
   colors: {
-    primary: '#5d2c8b',
-    secondary: '#ff7700',
+    primary: '#fff',
+    secondary: '#000',
     warn: '#ff8c00',
     success: '#2ecc71',
     error: '#e74c3c',
