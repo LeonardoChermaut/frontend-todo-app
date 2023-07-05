@@ -6,11 +6,5 @@ type ListProps = {
 };
 
 export const List: React.FC<ListProps> = ({ items }) => {
-  return (
-    <Column>
-      {items.map((item, index) => (
-        <ListItem key={index} {...item} />
-      ))}
-    </Column>
-  );
+  return <Column>{items && items.map((item, index) => <ListItem key={index} {...item} />)}</Column>;
 };
