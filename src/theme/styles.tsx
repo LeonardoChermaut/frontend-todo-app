@@ -11,13 +11,9 @@ export const UseGlobalStyle = createGlobalStyle<{ theme: ThemeType }>`
         border: 0;
     }
 
-    html, #root {
-        height: 100%;
-    }
-
     body {
-        background: linear-gradient(to right, #c31432, #240b36);
-
+        background-color: #0093E9;
+        background-image: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%);
         color: ${({ theme }) => theme.colors.secondary};
         font-family: Garet, sans-serif;
     }

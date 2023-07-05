@@ -9,7 +9,7 @@ export const Icon: React.FC<IconProps> = ({ variant }) => {
   const [src, setSrc] = useState();
 
   const mount = async () => {
-    const { default: src } = await import(`../../../public/${variant}.svg`);
+    const { default: src } = await import(`../../assets/${variant}.svg`);
     if (!src) return;
     return setSrc(src);
   };
