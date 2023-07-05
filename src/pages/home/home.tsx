@@ -2,7 +2,7 @@ import React, { useState, ChangeEvent } from 'react';
 import { Input, Text, Button, Row, Column, List, Image } from '../../components';
 import { ITask } from 'context';
 import { TaskProvider, useTaskContext } from '../../context';
-import Logo from '../../assets/logo.png';
+import { Logo } from '../../assets';
 
 export const Home = () => {
   const [taskName, setTaskName] = useState('');
