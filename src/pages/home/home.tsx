@@ -34,7 +34,7 @@ export const Home = () => {
     setTaskName('');
   };
 
-  const startTimer = () => {
+  const handleStartTimer = () => {
     const timerInterval = setInterval(() => {
       setSeconds((prevSeconds) => {
         if (prevSeconds === 0) {
@@ -46,6 +46,13 @@ export const Home = () => {
     }, 1000);
 
     setTimer(timerInterval);
+  };
+
+  const handlePauseButton = () => {
+    setTimer((prevTimer: any) => {
+      clearInterval(prevTimer);
+      return undefined;
+    });
   };
 
   const listItems = taskList.map((task) => ({ label: task.name }));
@@ -68,18 +75,18 @@ export const Home = () => {
             Ready
           </Text>
           <Text color="tertiary" fontWeight="bold" fontSize={80} property="30px">
-            {seconds}
+            {secondsToTime(seconds)}
           </Text>
-          <Button variant="transparent" width="53%" onClick={() => startTimer()}>
+          <Button variant="transparent" width="53%" onClick={handleStartTimer}>
             <Text color="tertiary" fontWeight="bold" fontSize={20}>
               Iniciar
             </Text>
           </Button>
           <Row>
-            <Button variant="transparent" width="25%" margin={2}>
+            <Button variant="transparent" width="25%" margin={2} onClick={handleStartTimer}>
               <Icon variant="play" />
             </Button>
-            <Button variant="transparent" width="25%" margin={2}>
+            <Button variant="transparent" width="25%" margin={2} onClick={handlePauseButton}>
               <Icon variant="pause" />
             </Button>
             <Button variant="transparent" width="25%" margin={2}>
