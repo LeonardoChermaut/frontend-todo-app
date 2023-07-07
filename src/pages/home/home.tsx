@@ -1,26 +1,28 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent, useMemo } from 'react';
 import { Input, Text, Button, Row, Column, List, Image, Icon } from '../../components';
 import { ITask } from 'context';
 import { useTaskContext } from '../../context';
 import { Logo } from '../../assets';
 
 const DEFAULT_SECONDS = 20;
+const SECONDS_MINUTES = 60;
 
-type Stage = 'ready' | 'running' | 'paused' | 'stopped' | 'done';
+type Stage = 'Ready' | 'Time to Work' | 'Paused' | 'Stopped' | 'Done';
 
 export const Home = () => {
-  const [taskName, setTaskName] = useState('');
   const { taskList, addTask } = useTaskContext();
-  const [seconds, setSeconds] = useState(DEFAULT_SECONDS);
   const [timer, setTimer] = useState<any>();
+  const [taskName, setTaskName] = useState('');
+  const [stage, setStage] = useState<Stage>('Ready');
+  const [seconds, setSeconds] = useState(DEFAULT_SECONDS);
 
-  const secondsToTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const secondsLeft = seconds % 60;
-    return formatedTime(minutes, secondsLeft);
+  const secondsToTimer = (seconds: number) => {
+    const minutes = Math.floor(seconds / SECONDS_MINUTES);
+    const secondsLeft = seconds % SECONDS_MINUTES;
+    return formattedTimer(minutes, secondsLeft);
   };
 
-  const formatedTime = (minutes: number, seconds: number) => {
+  const formattedTimer = (minutes: number, seconds: number) => {
     return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
   };
 
@@ -34,11 +36,33 @@ export const Home = () => {
     setTaskName('');
   };
 
+  const handleStageTimer = useMemo(() => {
+    switch (stage) {
+      case 'Ready':
+        setStage('Ready');
+        return 'Ready';
+      case 'Time to Work':
+        setStage('Time to Work');
+        return 'Time to Work';
+      case 'Paused':
+        setStage('Paused');
+        return 'Paused';
+      case 'Stopped':
+        setStage('Stopped');
+        return 'Stopped';
+      case 'Done':
+        setStage('Done');
+        return 'Done';
+    }
+  }, [stage]);
+
   const handleStartTimer = () => {
+    setStage('Time to Work');
     const timerInterval = setInterval(() => {
       setSeconds((prevSeconds) => {
         if (prevSeconds === 0) {
           clearInterval(timer);
+          setStage('Done');
           return 0;
         }
         return prevSeconds - 1;
@@ -49,10 +73,17 @@ export const Home = () => {
   };
 
   const handlePauseButton = () => {
+    setStage('Paused');
     setTimer((prevTimer: any) => {
       clearInterval(prevTimer);
       return undefined;
     });
+  };
+
+  const handleStopButton = () => {
+    setStage('Stopped');
+    handlePauseButton();
+    setSeconds(DEFAULT_SECONDS);
   };
 
   const listItems = taskList.map((task) => ({ label: task.name }));
@@ -72,13 +103,13 @@ export const Home = () => {
           alignItems="center">
           <Image src={Logo} width="30%" />
           <Text color="tertiary" fontWeight="bold" fontSize={20}>
-            Ready
+            {handleStageTimer}
           </Text>
           <Text color="tertiary" fontWeight="bold" fontSize={80} property="30px">
-            {secondsToTime(seconds)}
+            {secondsToTimer(seconds)}
           </Text>
           <Button variant="transparent" width="53%" onClick={handleStartTimer}>
-            <Text color="tertiary" fontWeight="bold" fontSize={20}>
+            <Text color="tertriary" fontWeight="bold" fontSize={20}>
               Iniciar
             </Text>
           </Button>
@@ -92,7 +123,7 @@ export const Home = () => {
             <Button variant="transparent" width="25%" margin={2}>
               <Icon variant="restart" />
             </Button>
-            <Button variant="transparent" width="25%" margin={2}>
+            <Button variant="transparent" width="25%" margin={2} onClick={handleStopButton}>
               <Icon variant="stop" />
             </Button>
             <Button variant="transparent" width="25%" margin={2}>
