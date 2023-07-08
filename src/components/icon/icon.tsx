@@ -3,9 +3,11 @@ import { useEffect, useState } from 'react';
 
 type IconProps = {
   variant: string;
+  width?: string;
+  height?: string;
 };
 
-export const Icon: React.FC<IconProps> = ({ variant }) => {
+export const Icon: React.FC<IconProps> = ({ variant, width, height }) => {
   const [src, setSrc] = useState();
 
   const mount = async () => {
@@ -16,7 +18,7 @@ export const Icon: React.FC<IconProps> = ({ variant }) => {
 
   useEffect(() => {
     mount();
-  }, []);
+  }, [mount]);
 
-  return <ImageIcon src={src} width="22px" height="22px" alt={variant} />;
+  return <ImageIcon src={src} width={width} height={height} alt={variant} />;
 };

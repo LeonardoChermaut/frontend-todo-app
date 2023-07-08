@@ -52,14 +52,17 @@ export const Home = () => {
       case 'Executando':
         return (
           <>
-            <Button variant="transparent" width="100%" margin={2} onClick={handlePauseButton}>
+            <Button variant="transparent" width="100%" margin={2} onClick={handleStopButton}>
               <Icon variant="play" />
+              <br /> Parar
             </Button>
             <Button variant="transparent" width="100%" margin={2} onClick={handlePauseButton}>
               <Icon variant="pause" />
+              <br /> Pausar
             </Button>
             <Button variant="transparent" width="100%" margin={2} onClick={handleStopButton}>
               <Icon variant="stop" />
+              <br /> Finalizar
             </Button>
           </>
         );
@@ -67,12 +70,13 @@ export const Home = () => {
         return (
           <>
             <Button variant="transparent" width="100%" margin={2} onClick={handleRestartButton}>
-              Reiniciar <br />
               <Icon variant="restart" />
+              <br />
+              Reiniciar
             </Button>
             <Button variant="transparent" width="100%" margin={2}>
-              Finalizar <br />
               <Icon variant="done" />
+              <br /> Finalizar
             </Button>
           </>
         );
