@@ -7,13 +7,13 @@ import { Logo } from '../../assets';
 const DEFAULT_SECONDS = 5;
 const SECONDS_MINUTES = 60;
 
-type Stage = 'Ready' | 'Time to Work' | 'Paused' | 'Stopped' | 'Done';
+type Stage = 'Pronto' | 'Executando' | 'Pausado' | 'Parado' | 'Finalizado';
 
 export const Home = () => {
   const { taskList, addTask } = useTaskContext();
   const [timer, setTimer] = useState<any>();
   const [taskName, setTaskName] = useState('');
-  const [stage, setStage] = useState<Stage>('Ready');
+  const [stage, setStage] = useState<Stage>('Pronto');
   const [seconds, setSeconds] = useState(DEFAULT_SECONDS);
 
   const secondsToTimer = (seconds: number) => {
@@ -38,16 +38,16 @@ export const Home = () => {
 
   const switchCaseStage = (stage: Stage) => {
     switch (stage) {
-      case 'Ready':
-        return 'Ready';
-      case 'Time to Work':
-        return 'Time to Work';
-      case 'Paused':
-        return 'Paused';
-      case 'Stopped':
-        return 'Stopped';
-      case 'Done':
-        return 'Done';
+      case 'Pronto':
+        return 'Pronto';
+      case 'Executando':
+        return 'Executando';
+      case 'Pausado':
+        return 'Pausado';
+      case 'Parado':
+        return 'Parado';
+      case 'Finalizado':
+        return 'Finalizado';
       default:
         break;
     }
@@ -65,13 +65,13 @@ export const Home = () => {
   };
 
   const handleStartTimer = useCallback(() => {
-    setStage('Time to Work');
+    setStage('Executando');
     const timerInterval = setInterval(() => {
       setSeconds((prevSeconds) => {
         if (prevSeconds === 0) {
           clearInterval(timer);
           setTimer(undefined);
-          setStage('Done');
+          setStage('Finalizado');
           return 0;
         }
         return prevSeconds - 1;
@@ -82,25 +82,25 @@ export const Home = () => {
   }, [timer]);
 
   const handlePauseButton = useCallback(() => {
-    setStage('Paused');
+    setStage('Pausado');
     clearTimerInterval();
   }, [timer]);
 
   const handleRestartButton = useCallback(() => {
-    setStage('Ready');
+    setStage('Pronto');
     clearTimerInterval();
     setSeconds(DEFAULT_SECONDS);
   }, [timer]);
 
   const handleStopButton = useCallback(() => {
-    setStage('Stopped');
+    setStage('Parado');
     clearTimerInterval();
     setSeconds(DEFAULT_SECONDS);
   }, [timer]);
 
   const handleStageButtons = useMemo(() => {
     switch (stage) {
-      case 'Ready':
+      case 'Pronto':
         return (
           <Fragment>
             <Button variant="transparent" width="100%" onClick={handleStartTimer}>
@@ -110,7 +110,7 @@ export const Home = () => {
             </Button>
           </Fragment>
         );
-      case 'Time to Work':
+      case 'Executando':
         return (
           <Fragment>
             <Button variant="transparent" width="100%" margin={2} onClick={handlePauseButton}>
@@ -124,7 +124,7 @@ export const Home = () => {
             </Button>
           </Fragment>
         );
-      case 'Done':
+      case 'Finalizado':
         return (
           <Fragment>
             <Button variant="transparent" width="100%" margin={2} onClick={handleRestartButton}>
@@ -137,7 +137,7 @@ export const Home = () => {
             </Button>
           </Fragment>
         );
-      case 'Paused':
+      case 'Pausado':
         return (
           <Fragment>
             <Button variant="transparent" width="100%" onClick={handleStartTimer}>
@@ -147,7 +147,7 @@ export const Home = () => {
             </Button>
           </Fragment>
         );
-      case 'Stopped':
+      case 'Parado':
         return (
           <Fragment>
             <Button variant="transparent" width="100%" onClick={handleStartTimer}>
@@ -191,7 +191,7 @@ export const Home = () => {
         padding={4}
         alignItems="center">
         <Image src={Logo} width="30%" />
-        <Text color="tertiary" fontWeight="bold" fontSize={20}>
+        <Text color="tertiary" fontWeight="bold" fontSize={20} marginBottom="10%">
           {handleStageStatus}
         </Text>
         <Text color="tertiary" fontWeight="bold" fontSize={80} property="30px">

@@ -14,7 +14,7 @@ export const ListItem: React.FC<ListItemProps> = ({ label }) => {
       borderRadius="4px"
       marginBottom="0.9rem"
       borderLeft="5px solid #fff">
-      <Text color="primary">{label}</Text>
+      <Text color="secondary">{label}</Text>
     </Column>
   );
 };
