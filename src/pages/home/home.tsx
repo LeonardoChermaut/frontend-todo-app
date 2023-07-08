@@ -17,6 +17,7 @@ export const Home = () => {
   const [timer, setTimer] = useState<number | undefined>(undefined);
   const [taskName, setTaskName] = useState<string>('');
   const [timerValue, setTimerValue] = useState<ITimer>({ minutes: 0, seconds: 5 });
+  const DEFAULT_TIMER_VALUE = { minutes: 0, seconds: 5 };
 
   const secondsToTimer = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -28,8 +29,8 @@ export const Home = () => {
     return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
   };
 
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setTaskName(event.target.value);
+  const handleInputChange = ({ target: { value: name } }: ChangeEvent<HTMLInputElement>) => {
+    setTaskName(name);
   };
 
   const handleAddTask = () => {
@@ -66,9 +67,11 @@ export const Home = () => {
         return (
           <>
             <Button variant="transparent" width="100%" margin={2} onClick={handleRestartButton}>
+              Reiniciar <br />
               <Icon variant="restart" />
             </Button>
             <Button variant="transparent" width="100%" margin={2}>
+              Finalizar <br />
               <Icon variant="done" />
             </Button>
           </>
@@ -111,11 +114,9 @@ export const Home = () => {
   const handleStartTimer = useCallback(() => {
     setStage('Executando');
     const timerInterval = setInterval(() => {
-      setTimerValue((prevTimerValue) => {
-        if (prevTimerValue.seconds === 0) {
-          return { minutes: 0, seconds: 0 };
-        }
-        return { minutes: prevTimerValue.minutes, seconds: prevTimerValue.seconds - 1 };
+      setTimerValue(({ minutes, seconds }) => {
+        if (seconds === 0) return DEFAULT_TIMER_VALUE;
+        return { minutes: minutes, seconds: seconds - 1 };
       });
     }, 1000);
 
@@ -132,15 +133,17 @@ export const Home = () => {
     setStage('Pronto');
     clearInterval(timer);
     setTimer(undefined);
-    setTimerValue({ minutes: 0, seconds: 5 });
+    setTimerValue(DEFAULT_TIMER_VALUE);
   }, [timer]);
 
   const handleStopButton = useCallback(() => {
     setStage('Parado');
     clearInterval(timer);
     setTimer(undefined);
-    setTimerValue({ minutes: 0, seconds: 5 });
+    setTimerValue(DEFAULT_TIMER_VALUE);
   }, [timer]);
+
+  const listItems = taskList.map((task) => ({ label: task.name }));
 
   return (
     <Column width="50%" margin="0 auto">
@@ -177,7 +180,7 @@ export const Home = () => {
           </Text>
         </Button>
       </Row>
-      <List items={taskList.map((task) => ({ label: task.name }))} />
+      <List items={listItems} />
     </Column>
   );
 };
