@@ -11,7 +11,7 @@ export const Input = styled.input<InputProps>`
   outline: none;
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.2);
+    color: #000;
   }
 
   ${flex}

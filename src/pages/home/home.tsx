@@ -1,42 +1,32 @@
-import React, { useState, ChangeEvent, useEffect, useCallback } from 'react';
+import { useState, ChangeEvent, useEffect, useCallback, useMemo } from 'react';
 import { Input, Text, Button, Row, Column, List, Image, Icon } from '../../components';
-import { ITask } from 'context';
-import { useTaskContext } from '../../context';
 import { Logo } from '../../assets';
+import { useTaskContext } from '../../context';
+import { ITimer, ITodo } from '../../interfaces';
 
-interface ITimer {
-  seconds: number;
-  minutes: number;
-}
+const secondsToTimer = (seconds: number) => {
+  const minutes = Math.floor(seconds / 60);
+  const secondsLeft = seconds % 60;
+  return formattedTimer(minutes, secondsLeft);
+};
+
+const formattedTimer = (minutes: number, seconds: number) => {
+  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+};
 
 type Stage = 'Pronto' | 'Executando' | 'Pausado' | 'Parado' | 'Finalizado';
 
+const DEFAULT_TIMER_VALUE = { minutes: 0, seconds: 5 };
+
 export const Home = () => {
-  const { taskList, addTask } = useTaskContext();
+  const { taskList, createTodo, getTasks } = useTaskContext();
   const [stage, setStage] = useState<Stage>('Pronto');
   const [timer, setTimer] = useState<number | undefined>(undefined);
   const [taskName, setTaskName] = useState<string>('');
-  const [timerValue, setTimerValue] = useState<ITimer>({ minutes: 0, seconds: 5 });
-  const DEFAULT_TIMER_VALUE = { minutes: 0, seconds: 5 };
-
-  const secondsToTimer = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const secondsLeft = seconds % 60;
-    return formattedTimer(minutes, secondsLeft);
-  };
-
-  const formattedTimer = (minutes: number, seconds: number) => {
-    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-  };
+  const [timerValue, setTimerValue] = useState<ITimer>(DEFAULT_TIMER_VALUE);
 
   const handleInputChange = ({ target: { value: name } }: ChangeEvent<HTMLInputElement>) => {
     setTaskName(name);
-  };
-
-  const handleAddTask = () => {
-    const newTask: ITask = { name: taskName };
-    addTask(newTask);
-    setTaskName('');
   };
 
   const handleStageButtons = useCallback(() => {
@@ -107,13 +97,14 @@ export const Home = () => {
     }
   }, [stage]);
 
-  useEffect(() => {
-    if (timerValue.seconds === 0) {
-      clearInterval(timer);
-      setTimer(undefined);
-      setStage('Finalizado');
-    }
-  }, [timer, timerValue.seconds]);
+  const handleAddTask = useCallback(async () => {
+    await createTodo({
+      task: taskName,
+      isDone: false,
+    });
+    await getTasks();
+    setTaskName('');
+  }, [createTodo, getTasks, taskName]);
 
   const handleStartTimer = useCallback(() => {
     setStage('Executando');
@@ -125,7 +116,7 @@ export const Home = () => {
     }, 1000);
 
     setTimer(timerInterval);
-  }, []);
+  }, [setTimerValue]);
 
   const handlePauseButton = useCallback(() => {
     setStage('Pausado');
@@ -147,7 +138,23 @@ export const Home = () => {
     setTimerValue(DEFAULT_TIMER_VALUE);
   }, [timer]);
 
-  const listItems = taskList.map((task) => ({ label: task.name }));
+  const listItems = useMemo(
+    () =>
+      taskList.map((task: ITodo, index: number) => ({
+        id: index,
+        task: task.task,
+        isDone: task.isDone || false,
+      })),
+    [taskList],
+  );
+
+  useEffect(() => {
+    if (timerValue.seconds === 0) {
+      clearInterval(timer);
+      setTimer(undefined);
+      setStage('Finalizado');
+    }
+  }, [timer, timerValue.seconds]);
 
   return (
     <Column width="50%" margin="0 auto">
@@ -162,7 +169,7 @@ export const Home = () => {
         padding={4}
         alignItems="center">
         <Image src={Logo} width="30%" />
-        <Text color="tertiary" fontWeight="bold" fontSize={20} marginBottom="10%">
+        <Text color="tertiary" fontWeight="bold" fontSize={20} marginBottom="2%">
           {stage}
         </Text>
         <Text color="tertiary" fontWeight="bold" fontSize={80} property="30px">
@@ -171,13 +178,13 @@ export const Home = () => {
 
         <Row>{handleStageButtons()}</Row>
       </Column>
-      <Column textAlign="center">
-        <Text color="secondary" fontWeight="bold" fontSize={40}>
+      <Column textAlign="left">
+        <Text color="secondary" fontWeight="bold" fontSize={20} marginBottom={1} marginLeft={2}>
           Tarefas
         </Text>
       </Column>
-      <Row width="100%">
-        <Input flex={1} placeholder="Adicionar tarefa" value={taskName} onChange={handleInputChange} />
+      <Row width="100%" marginBottom={2}>
+        <Input flex={1} placeholder="Digite aqui sua tarefa" value={taskName} onChange={handleInputChange} />
         <Button onClick={handleAddTask}>
           <Text color="secondary" fontWeight="bold" fontSize={1}>
             Adicionar

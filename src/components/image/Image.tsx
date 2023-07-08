@@ -1,9 +1,4 @@
-interface IImageProps {
-  width?: string;
-  height?: string;
-  alt?: string;
-  src?: string;
-}
+import { IImageProps } from 'interface';
 
 type ImageProps = IImageProps & React.ImgHTMLAttributes<HTMLImageElement>;
 
