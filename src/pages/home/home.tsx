@@ -19,86 +19,28 @@ type Stage = 'Pronto' | 'Executando' | 'Pausado' | 'Parado' | 'Finalizado';
 const DEFAULT_TIMER_VALUE = { minutes: 0, seconds: 5 };
 
 export const Home = () => {
-  const { taskList, createTodo, getTasks } = useTaskContext();
+  const { taskList, createTodo, getTasks, updateTodo } = useTaskContext();
   const [stage, setStage] = useState<Stage>('Pronto');
-  const [timer, setTimer] = useState<number | undefined>(undefined);
   const [taskName, setTaskName] = useState<string>('');
+  const [taskIndex, setTaskIndex] = useState<number>(0);
+  const [timer, setTimer] = useState<number | undefined>(undefined);
   const [timerValue, setTimerValue] = useState<ITimer>(DEFAULT_TIMER_VALUE);
 
   const handleInputChange = ({ target: { value: name } }: ChangeEvent<HTMLInputElement>) => {
     setTaskName(name);
   };
 
-  const handleStageButtons = useCallback(() => {
-    switch (stage) {
-      case 'Pronto':
-        return (
-          <Button variant="transparent" width="100%" onClick={handleStartTimer}>
-            <Text color="tertriary" fontWeight="bold" fontSize={20}>
-              Iniciar
-            </Text>
-          </Button>
-        );
-      case 'Executando':
-        return (
-          <>
-            <Button variant="transparent" width="100%" margin={2} onClick={handleStopButton}>
-              <Icon variant="play" />
-              <br /> Parar
-            </Button>
-            <Button variant="transparent" width="100%" margin={2} onClick={handlePauseButton}>
-              <Icon variant="pause" />
-              <br /> Pausar
-            </Button>
-            <Button variant="transparent" width="100%" margin={2} onClick={handleStopButton}>
-              <Icon variant="stop" />
-              <br /> Finalizar
-            </Button>
-          </>
-        );
-      case 'Finalizado':
-        return (
-          <>
-            <Button variant="transparent" width="100%" margin={2} onClick={handleRestartButton}>
-              <Icon variant="restart" />
-              <br />
-              Reiniciar
-            </Button>
-            <Button variant="transparent" width="100%" margin={2}>
-              <Icon variant="done" />
-              <br /> Finalizar
-            </Button>
-          </>
-        );
-      case 'Pausado':
-        return (
-          <Button variant="transparent" width="100%" onClick={handleStartTimer}>
-            <Text color="tertriary" fontWeight="bold" fontSize={20}>
-              Retornar
-            </Text>
-          </Button>
-        );
-      case 'Parado':
-        return (
-          <Button variant="transparent" width="100%" onClick={handleStartTimer}>
-            <Text color="tertriary" fontWeight="bold" fontSize={20}>
-              Iniciar
-            </Text>
-          </Button>
-        );
-      default:
-        return (
-          <Button variant="transparent" width="100%" onClick={handleStartTimer}>
-            <Text color="tertriary" fontWeight="bold" fontSize={20}>
-              Iniciar
-            </Text>
-          </Button>
-        );
+  const handleDoneButton = useCallback(async () => {
+    const { id, task } = taskList[taskIndex];
+    if (id && task) {
+      await updateTodo(id, { task, isDone: true });
+      await getTasks();
     }
-  }, [stage]);
+  }, [taskIndex, taskList, updateTodo]);
 
   const handleAddTask = useCallback(async () => {
     await createTodo({
+      id: taskList.length + 1,
       task: taskName,
       isDone: false,
     });
@@ -138,7 +80,7 @@ export const Home = () => {
     setTimerValue(DEFAULT_TIMER_VALUE);
   }, [timer]);
 
-  const listItems = useMemo(
+  const tasks = useMemo(
     () =>
       taskList.map((task: ITodo, index: number) => ({
         id: index,
@@ -147,6 +89,74 @@ export const Home = () => {
       })),
     [taskList],
   );
+
+  const handleStageButtons = useCallback(() => {
+    switch (stage) {
+      case 'Pronto':
+        return (
+          <Button variant="transparent" width="100%" onClick={handleStartTimer}>
+            <Text color="tertriary" fontWeight="bold" fontSize={20}>
+              Iniciar
+            </Text>
+          </Button>
+        );
+      case 'Executando':
+        return (
+          <>
+            <Button variant="transparent" width="100%" margin={2} onClick={handleStopButton}>
+              <Icon variant="play" />
+              <br /> Parar
+            </Button>
+            <Button variant="transparent" width="100%" margin={2} onClick={handlePauseButton}>
+              <Icon variant="pause" />
+              <br /> Pausar
+            </Button>
+            <Button variant="transparent" width="100%" margin={2} onClick={handleStopButton}>
+              <Icon variant="stop" />
+              <br /> Finalizar
+            </Button>
+          </>
+        );
+      case 'Finalizado':
+        return (
+          <>
+            <Button variant="transparent" width="100%" margin={2} onClick={handleRestartButton}>
+              <Icon variant="restart" />
+              <br />
+              Reiniciar
+            </Button>
+            <Button variant="transparent" width="100%" margin={2} onClick={handleDoneButton}>
+              <Icon variant="done" />
+              <br /> Finalizar
+            </Button>
+          </>
+        );
+      case 'Pausado':
+        return (
+          <Button variant="transparent" width="100%" onClick={handleStartTimer}>
+            <Text color="tertriary" fontWeight="bold" fontSize={20}>
+              Retornar
+            </Text>
+          </Button>
+        );
+      case 'Parado':
+        return (
+          <Button variant="transparent" width="100%" onClick={handleStartTimer}>
+            <Text color="tertriary" fontWeight="bold" fontSize={20}>
+              Iniciar
+            </Text>
+          </Button>
+        );
+      default:
+        return (
+          <Button variant="transparent" width="100%" onClick={handleStartTimer}>
+            <Text color="tertriary" fontWeight="bold" fontSize={20}>
+              Iniciar
+            </Text>
+          </Button>
+        );
+    }
+  }, [stage, handleStartTimer, handleStopButton, handlePauseButton, handleRestartButton, handleDoneButton]);
 
   useEffect(() => {
     if (timerValue.seconds === 0) {
@@ -191,7 +201,7 @@ export const Home = () => {
           </Text>
         </Button>
       </Row>
-      <List items={listItems} />
+      <List items={tasks} selectedIndex={taskIndex} onClick={setTaskIndex} />
     </Column>
   );
 };

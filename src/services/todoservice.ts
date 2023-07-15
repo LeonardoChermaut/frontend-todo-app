@@ -13,7 +13,6 @@ const formatTimestamp = (timestamp: string): string => {
     return formattedTimestamp.toString();
   };
   
-
 const throwApiException = <T>({ response: { data } }: any): IResponse<T> => {
     const { statusCode, path, message, timestamp } = data;
     
@@ -30,9 +29,13 @@ const getAll = async () => await api.get<ITodo[]>('todos').catch((error) => thro
 const create = async (todo: Pick<ITodo, 'task' | 'isDone'>): Promise<IResponse<void>> =>
   await api.post('todos', todo).catch((error) => throwApiException(error));
 
+const update = async (id: number, todo: Pick<ITodo, 'task' | 'isDone'>): Promise<IResponse<void>> =>
+  await api.put(`todos/${id}`, todo).catch((error) => throwApiException(error));
+
 export const TodoService = () => {
   return {
     getAll,
     create,
+    update,
   };
 };

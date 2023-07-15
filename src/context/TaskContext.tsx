@@ -9,12 +9,13 @@ type TaskProviderProps = {
 };
 
 export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
-  const { getTasks, createTodo, tasks } = useTodo();
+  const { getTasks, createTodo, tasks, updateTodo } = useTodo();
 
   const value: ITaskContext = {
     taskList: tasks,
     createTodo,
     getTasks,
+    updateTodo,
   };
 
   return <TaskContext.Provider value={value}>{children}</TaskContext.Provider>;

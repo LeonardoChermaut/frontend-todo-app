@@ -1,10 +1,20 @@
+import { ITodo } from 'interfaces';
 import { Column } from '../column';
-import { ListItem, ListItemProps } from './ListItem';
+import { ListItem } from './ListItem';
 
 type ListProps = {
-  items: ListItemProps[];
+  items: ITodo[];
+  selectedIndex?: number;
+  onClick?: (index: number) => void;
 };
 
-export const List: React.FC<ListProps> = ({ items }) => {
-  return <Column>{items && items.map((item, index) => <ListItem key={index} {...item} />)}</Column>;
+export const List: React.FC<ListProps> = ({ items, onClick, selectedIndex }) => {
+  return (
+    <Column>
+      {items &&
+        items.map((item, index) => (
+          <ListItem key={index} {...item} index={index} onClick={onClick} isActived={index === selectedIndex} />
+        ))}
+    </Column>
+  );
 };

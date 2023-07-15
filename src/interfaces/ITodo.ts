@@ -1,4 +1,5 @@
 export interface ITodo {
+    id: number;
     task: string
     isDone?: boolean
   }
@@ -12,6 +13,7 @@ export interface ITaskContext {
     taskList: ITodo[];
     createTodo: (task: ITodo) => void;
     getTasks: () => Promise<void>; 
+    updateTodo: (id: number, todo: Pick<ITodo, 'task' | 'isDone'>) => void;
   }
 
 export interface IImageProps {

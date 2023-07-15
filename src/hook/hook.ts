@@ -4,7 +4,7 @@ import { TodoService } from "../services";
 import { HTTPS_STATUS } from "../providers/http";
 
 export const useTodo = () => {
-    const { getAll , create } = TodoService();
+    const { getAll , create, update } = TodoService();
     const [tasks, setTasks] = useState<ITodo[]>([]);
 
     const getTasks = useCallback(async () => {
@@ -21,6 +21,17 @@ export const useTodo = () => {
       const { status } = await create(todo);
       if (status === HTTPS_STATUS.CREATED) return alert('Tarefa criada com sucesso!');
     } catch (error) {
+      alert('Erro ao criar tarefa!');
+      throw error      
+    }
+  }, []);
+
+  const updateTodo = useCallback(async (id: number, todo: Pick<ITodo, 'task' | 'isDone'>) => {
+    try {
+      const { status } = await update(id, todo);
+      if (status === HTTPS_STATUS.CREATED) return alert('Tarefa atualizada com sucesso!');
+    } catch (error) {
+      alert('Erro ao atualizar tarefa!');
       throw error      
     }
   }, []);
@@ -32,6 +43,7 @@ export const useTodo = () => {
   return {
       tasks,
       createTodo,
-      getTasks
+      getTasks,
+      updateTodo,
     }
 };
