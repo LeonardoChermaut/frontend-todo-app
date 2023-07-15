@@ -1,6 +1,7 @@
 import { ITodo } from "../interfaces";
 import { useCallback, useEffect, useState } from "react";
 import { TodoService } from "../services";
+import { HTTPS_STATUS } from "../providers/http";
 
 export const useTodo = () => {
     const { getAll , create } = TodoService();
@@ -9,18 +10,19 @@ export const useTodo = () => {
     const getTasks = useCallback(async () => {
     try {
       const { status, data: tasks } = await getAll();
-      if (status !== 200) throw new Error('Error on get tasks');
-
-      return setTasks(tasks);
+      if (status === HTTPS_STATUS.OK) return setTasks(tasks as ITodo[]);
     } catch (error) {
-      const { message } = error as any;
-      throw new Error('Error request message API: ' + message);
+      throw error;
     }
   }, []);
 
   const createTodo = useCallback(async (todo: Pick<ITodo, 'task' | 'isDone'>) => {
-    const { status } = await create(todo);
-    if (status !== 201) throw new Error('Error on create task');
+    try {
+      const { status } = await create(todo);
+      if (status === HTTPS_STATUS.CREATED) return alert('Tarefa criada com sucesso!');
+    } catch (error) {
+      throw error      
+    }
   }, []);
 
   useEffect(() => {
