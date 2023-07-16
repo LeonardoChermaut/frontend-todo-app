@@ -3,28 +3,18 @@ import { Input, Text, Button, Row, Column, List, Image, Icon } from '../../compo
 import { Logo } from '../../assets';
 import { useTaskContext } from '../../context';
 import { ITimer, ITodo } from '../../interfaces';
-
-const secondsToTimer = (seconds: number) => {
-  const minutes = Math.floor(seconds / 60);
-  const secondsLeft = seconds % 60;
-  return formattedTimer(minutes, secondsLeft);
-};
-
-const formattedTimer = (minutes: number, seconds: number) => {
-  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-};
-
-type Stage = 'Pronto' | 'Executando' | 'Pausado' | 'Parado' | 'Finalizado';
+import { Stage, TimerState, secondsToTimer } from './utils';
 
 const DEFAULT_TIMER_VALUE = { minutes: 0, seconds: 5 };
 
 export const Home = () => {
-  const { taskList, createTodo, getTasks, updateTodo } = useTaskContext();
   const [stage, setStage] = useState<Stage>('Pronto');
   const [taskName, setTaskName] = useState<string>('');
   const [taskIndex, setTaskIndex] = useState<number>(0);
-  const [timer, setTimer] = useState<number | undefined>(undefined);
+  const [timer, setTimer] = useState<TimerState>(undefined);
   const [timerValue, setTimerValue] = useState<ITimer>(DEFAULT_TIMER_VALUE);
+
+  const { taskList, createTodo, getTasks, updateTodo } = useTaskContext();
 
   const handleInputChange = ({ target: { value: name } }: ChangeEvent<HTMLInputElement>) => {
     setTaskName(name);
@@ -36,7 +26,7 @@ export const Home = () => {
       await updateTodo(id, { task, isDone: true });
       await getTasks();
     }
-  }, [taskIndex, taskList, updateTodo]);
+  }, [taskIndex, taskList, updateTodo, getTasks]);
 
   const handleAddTask = useCallback(async () => {
     await createTodo({
@@ -158,12 +148,14 @@ export const Home = () => {
     }
   }, [stage, handleStartTimer, handleStopButton, handlePauseButton, handleRestartButton, handleDoneButton]);
 
+  const cleanerValuesTimer = () => {
+    clearInterval(timer);
+    setTimer(undefined);
+    setStage('Finalizado');
+  };
+
   useEffect(() => {
-    if (timerValue.seconds === 0) {
-      clearInterval(timer);
-      setTimer(undefined);
-      setStage('Finalizado');
-    }
+    if (timerValue.seconds === 0) return cleanerValuesTimer();
   }, [timer, timerValue.seconds]);
 
   return (

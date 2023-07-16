@@ -14,6 +14,7 @@ export interface ITaskContext {
     createTodo: (task: ITodo) => void;
     getTasks: () => Promise<void>; 
     updateTodo: (id: number, todo: Pick<ITodo, 'task' | 'isDone'>) => void;
+    removeTodo: (id: number) => void;
   }
 
 export interface IImageProps {

@@ -4,9 +4,9 @@ import { TodoService } from "../services";
 import { HTTPS_STATUS } from "../providers/http";
 
 export const useTodo = () => {
-    const { getAll , create, update } = TodoService();
+    const { getAll , create, update, remove } = TodoService();
     const [tasks, setTasks] = useState<ITodo[]>([]);
-
+    
     const getTasks = useCallback(async () => {
     try {
       const { status, data: tasks } = await getAll();
@@ -36,6 +36,16 @@ export const useTodo = () => {
     }
   }, []);
 
+  const removeTodo = useCallback(async (id: number) => {
+    try {
+      const { status } = await remove(id);
+      if (status === HTTPS_STATUS.ACCEPTED) return alert('Tarefa excluída com sucesso!');
+    } catch (error) {
+      alert('Erro ao excluir tarefa!');
+      throw error      
+    }
+  }, []);
+
   useEffect(() => {
     getTasks();
   }, [getTasks]);
@@ -45,5 +55,6 @@ export const useTodo = () => {
       createTodo,
       getTasks,
       updateTodo,
+      removeTodo
     }
 };

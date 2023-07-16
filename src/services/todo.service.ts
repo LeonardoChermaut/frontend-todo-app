@@ -32,10 +32,14 @@ const create = async (todo: Pick<ITodo, 'task' | 'isDone'>): Promise<IResponse<v
 const update = async (id: number, todo: Pick<ITodo, 'task' | 'isDone'>): Promise<IResponse<void>> =>
   await api.put(`todos/${id}`, todo).catch((error) => throwApiException(error));
 
+const remove = async (id: number): Promise<IResponse<void>> => 
+  await api.delete(`todos/${id}`).catch((error) => throwApiException(error));
+
 export const TodoService = () => {
   return {
     getAll,
     create,
     update,
+    remove
   };
 };
