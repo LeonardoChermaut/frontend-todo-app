@@ -1,5 +1,5 @@
-import { ITodo } from "../interfaces";
 import { useCallback, useEffect, useState } from "react";
+import { ITodo } from "../interfaces";
 import { TodoService } from "../services";
 import { HTTPS_STATUS } from "../providers/http";
 
@@ -22,7 +22,7 @@ export const useTodo = () => {
       if (status === HTTPS_STATUS.CREATED) return alert('Tarefa criada com sucesso!');
     } catch (error) {
       alert('Erro ao criar tarefa!');
-      throw error      
+      throw error;
     }
   }, []);
 

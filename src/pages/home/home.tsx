@@ -30,7 +30,6 @@ export const Home = () => {
 
   const handleAddTask = useCallback(async () => {
     await createTodo({
-      id: taskList.length + 1,
       task: taskName,
       isDone: false,
     });

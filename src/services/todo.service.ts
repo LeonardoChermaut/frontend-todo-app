@@ -1,45 +1,34 @@
 import { ITodo } from '../interfaces';
-import { api } from '../providers';
+import { ApiInstance } from '../providers';
+import { IResponse } from '../providers/interface';
 
-interface IResponse<T> {
-  data: T;
-  status: number;
+type TodoProps = Pick<ITodo, 'task' | 'isDone'>;
+
+type TodoResponse = IResponse<void>;
+
+const api = ApiInstance.getInstance().getApi();
+
+const getAll = async () => {
+  return await api.get<ITodo[]>('todos');
 }
 
-const formatTimestamp = (timestamp: string): string => {
-    const date = new Date(timestamp);
-    const formattedTimestamp = date.toLocaleString(); 
-  
-    return formattedTimestamp.toString();
-  };
-  
-const throwApiException = <T>({ response: { data } }: any): IResponse<T> => {
-    const { statusCode, path, message, timestamp } = data;
-    
-    throw {
-      statusCode,
-      path,
-      message,
-      timestamp: formatTimestamp(timestamp),
-    };
+const remove = async (id: number): Promise<TodoResponse> => {
+  return await api.delete(`todos/${id}`);
 };
 
-const getAll = async () => await api.get<ITodo[]>('todos').catch((error) => throwApiException(error));
+const create = async (todo: TodoProps): Promise<TodoResponse> => {
+   return await api.post('todos', todo);
+};
 
-const create = async (todo: Pick<ITodo, 'task' | 'isDone'>): Promise<IResponse<void>> =>
-  await api.post('todos', todo).catch((error) => throwApiException(error));
-
-const update = async (id: number, todo: Pick<ITodo, 'task' | 'isDone'>): Promise<IResponse<void>> =>
-  await api.put(`todos/${id}`, todo).catch((error) => throwApiException(error));
-
-const remove = async (id: number): Promise<IResponse<void>> => 
-  await api.delete(`todos/${id}`).catch((error) => throwApiException(error));
+const update = async (id: number, todo: TodoProps): Promise<TodoResponse> => {
+  return await api.put(`todos/${id}`, todo);
+};
 
 export const TodoService = () => {
   return {
     getAll,
     create,
     update,
-    remove
+    remove,
   };
 };
