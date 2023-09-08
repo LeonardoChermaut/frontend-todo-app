@@ -16,6 +16,12 @@ export const Home = () => {
 
   const { taskList, createTodo, getTasks, updateTodo } = useTaskContext();
 
+  const cleanerValuesTimerAndStage = (stage: string) => {
+    clearInterval(timer);
+    setTimer(undefined);
+    setStage(stage);
+  };
+
   const handleInputChange = ({ target: { value: name } }: ChangeEvent<HTMLInputElement>) => {
     setTaskName(name);
   };
@@ -50,22 +56,16 @@ export const Home = () => {
   }, [setTimerValue]);
 
   const handlePauseButton = useCallback(() => {
-    setStage('Pausado');
-    clearInterval(timer);
-    setTimer(undefined);
+    cleanerValuesTimerAndStage('Pausado');
   }, [timer]);
 
   const handleRestartButton = useCallback(() => {
-    setStage('Pronto');
-    clearInterval(timer);
-    setTimer(undefined);
+    cleanerValuesTimerAndStage('Pronto');
     setTimerValue(DEFAULT_TIMER_VALUE);
   }, [timer]);
 
   const handleStopButton = useCallback(() => {
-    setStage('Parado');
-    clearInterval(timer);
-    setTimer(undefined);
+    cleanerValuesTimerAndStage('Parado');
     setTimerValue(DEFAULT_TIMER_VALUE);
   }, [timer]);
 
@@ -147,14 +147,8 @@ export const Home = () => {
     }
   }, [stage, handleStartTimer, handleStopButton, handlePauseButton, handleRestartButton, handleDoneButton]);
 
-  const cleanerValuesTimer = () => {
-    clearInterval(timer);
-    setTimer(undefined);
-    setStage('Finalizado');
-  };
-
   useEffect(() => {
-    if (timerValue.seconds === 0) return cleanerValuesTimer();
+    if (timerValue.seconds === 0) return cleanerValuesTimerAndStage('Finalizado');
   }, [timer, timerValue.seconds]);
 
   return (
